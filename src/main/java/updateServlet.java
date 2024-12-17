@@ -9,29 +9,26 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@WebServlet("/login")
-public class RegistrationServlet extends HttpServlet{
+@WebServlet("/update")
+public class updateServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String name=req.getParameter("username");
-		String email=req.getParameter("email");
 		String password=req.getParameter("password");
-		
+		String email=req.getParameter("email");
 		try {
 			PrintWriter pw=resp.getWriter();
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/swiggy", "root", "root");
-			String sql="insert into login(name,email,password) values(?,?,?)";
+			Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/swiggy","root","root");
+			String sql="update login set password=? where email=?";
 			PreparedStatement pmst=conn.prepareStatement(sql);
-			pmst.setString(1, name);
+			pmst.setString(1, password);
 			pmst.setString(2, email);
-			pmst.setString(3, password);
 			int i=pmst.executeUpdate();
 			if(i > 0) {
-				resp.sendRedirect("welcome.jsp");
+				pw.println("updated successful");		
 			}
 			else {
-				resp.sendRedirect("login.jsp");
+				pw.println("error");
 			}
 			pmst.close();
 			conn.close();
@@ -40,5 +37,5 @@ public class RegistrationServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
-	
+
 }

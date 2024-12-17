@@ -3,42 +3,35 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@WebServlet("/login")
-public class RegistrationServlet extends HttpServlet{
+@WebServlet("/getbyemail")
+public class getbyemailServlet extends HttpServlet{
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String name=req.getParameter("username");
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String email=req.getParameter("email");
-		String password=req.getParameter("password");
-		
 		try {
 			PrintWriter pw=resp.getWriter();
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/swiggy", "root", "root");
-			String sql="insert into login(name,email,password) values(?,?,?)";
+			String sql="select * from login where email=?";
 			PreparedStatement pmst=conn.prepareStatement(sql);
-			pmst.setString(1, name);
-			pmst.setString(2, email);
-			pmst.setString(3, password);
-			int i=pmst.executeUpdate();
-			if(i > 0) {
-				resp.sendRedirect("welcome.jsp");
+			pmst.setString(1, email);
+			ResultSet rs=pmst.executeQuery();
+			while(rs.next()) {
+				pw.println("id :"+rs.getInt("id"));
+				pw.println("name :"+rs.getString("name"));
+				pw.println("email :"+rs.getString("email"));
+				pw.println("password :"+rs.getString("password"));
 			}
-			else {
-				resp.sendRedirect("login.jsp");
-			}
-			pmst.close();
-			conn.close();
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 }

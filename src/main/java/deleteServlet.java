@@ -9,29 +9,24 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@WebServlet("/login")
-public class RegistrationServlet extends HttpServlet{
+@WebServlet("/delete")
+public class deleteServlet extends HttpServlet{
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String name=req.getParameter("username");
+	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String email=req.getParameter("email");
-		String password=req.getParameter("password");
-		
 		try {
 			PrintWriter pw=resp.getWriter();
 			Class.forName("com.mysql.cj.jdbc.Driver");
-			Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/swiggy", "root", "root");
-			String sql="insert into login(name,email,password) values(?,?,?)";
+			Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/swiggy","root","root");
+			String sql="delete from login where email=?";
 			PreparedStatement pmst=conn.prepareStatement(sql);
-			pmst.setString(1, name);
-			pmst.setString(2, email);
-			pmst.setString(3, password);
+			pmst.setString(1, email);
 			int i=pmst.executeUpdate();
-			if(i > 0) {
-				resp.sendRedirect("welcome.jsp");
+			if(i == 0) {
+				pw.println("deleted successful");		
 			}
 			else {
-				resp.sendRedirect("login.jsp");
+				pw.println("error");
 			}
 			pmst.close();
 			conn.close();
@@ -40,5 +35,5 @@ public class RegistrationServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 	}
-	
+
 }

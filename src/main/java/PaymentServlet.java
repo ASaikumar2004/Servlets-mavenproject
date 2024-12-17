@@ -9,29 +9,30 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-@WebServlet("/login")
-public class RegistrationServlet extends HttpServlet{
+@WebServlet("/payment")
+public class PaymentServlet extends HttpServlet{
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String name=req.getParameter("username");
-		String email=req.getParameter("email");
-		String password=req.getParameter("password");
+		String c=req.getParameter("cardnumber");
+		String ed=req.getParameter("expirydate");
+		String cv=req.getParameter("cvv");
+		String n=req.getParameter("nameoncard");
 		
 		try {
-			PrintWriter pw=resp.getWriter();
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			Connection conn=DriverManager.getConnection("jdbc:mysql://localhost:3306/swiggy", "root", "root");
-			String sql="insert into login(name,email,password) values(?,?,?)";
+			String sql="insert into paymentdetails(cardnumber,expirydate,cvv,nameoncard) values(?,?,?,?)";
 			PreparedStatement pmst=conn.prepareStatement(sql);
-			pmst.setString(1, name);
-			pmst.setString(2, email);
-			pmst.setString(3, password);
+			pmst.setString(1, c);
+			pmst.setString(2, ed);
+			pmst.setString(3, cv);
+			pmst.setString(4, n);
 			int i=pmst.executeUpdate();
 			if(i > 0) {
 				resp.sendRedirect("welcome.jsp");
 			}
 			else {
-				resp.sendRedirect("login.jsp");
+				resp.sendRedirect("payment.jsp");
 			}
 			pmst.close();
 			conn.close();
