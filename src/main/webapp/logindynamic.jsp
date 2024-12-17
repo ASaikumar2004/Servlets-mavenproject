@@ -21,15 +21,18 @@
 			PreparedStatement pmst = conn.prepareStatement(sql);
 			pmst.setString(1, "email");
 			pmst.setString(2, "password");
-			ResultSet rs = pmst.executeQuery();
-			while (rs.next()) {
+			int i = pmst.executeQuery();
+			if(i > 0) {
+				
+			}else{
+				
 		%>
 		<input type="email" name="email" placeholder="enter email"><br>
 		<input type="password" name="password" placeholder="enter password"><br>
 		<button type=submit>Submit</button>
 
-
 		<%
+		}
 		}
 		} catch (Exception e) {
 		e.printStackTrace();
